@@ -1,0 +1,1 @@
+echo "Hey, This is a sample message from Ritu!!!"

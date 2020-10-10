@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkname": {
+            "defaultValue": "rgarmvnet1",
+            "allowedValues": [
+                "rgarmvnet1",
+                "rgarmvnet2",
+                "rgarmvnet3",
+                "rgarmvnet4"
+            ],
+            "type": "String"
+        },
+        "address-space": {
+            "defaultValue": "10.1.0.0/16",
+            "type": "String"
+        },
+        "subnet1": {
+            "defaultValue": "rgsubnet1",
+            "type": "String"
+        },
+        "subnet2": {
+            "defaultValue": "rgsubnet2",
+            "type": "String"
+        },
+        "subnet1-address": {
+            "defaultValue": "10.1.0.0/24",
+            "type": "String"
+        },
+        "subnet2-address": {
+            "defaultValue": "10.1.1.0/24",
+            "type": "String"
+        },
+        "networkSecurityGroup": {
+            "defaultValue": "rgnsg",
+            "type": "String"
+        }
+
+    },
+    "variables": {
+        "location-name": "australiasoutheast"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('networkname')]",
+            "location": "[variables('location-name')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('address-space')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnet1')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet1-address')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('networkSecurityGroup'))]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "[parameters('subnet2')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnet2-address')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('networkSecurityGroup'))]"
+                            },
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Enabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            }
+        }
+    ]
+}

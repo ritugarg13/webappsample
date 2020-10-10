@@ -1,0 +1,45 @@
+//Create the resource group
+az group create --name kuberg --location eastus
+
+//create a new Kubernetes cluster
+az aks create --resource-group kuberg --name rgkcluster --node-count 1 --enable-addons monitoring --generate-ssh-keys
+
+/install the kubectl tool
+az aks install-cli --install-location=./kubectl
+
+//This will allow kubectl to connect to the kubernetes cluster.
+az aks get-credentials --resource-group kuberg --name rgkcluster
+
+//create the deployment
+//by default it picks up the image from docker hub. It can also get the image from Azure Container registry
+kubectl apply -f app.yml
+
+//create the service
+kubectl apply -f service.yml
+
+//get the public IP address of the loadbalancr for the service  
+kubectl get service nginx-service --watch
+
+kubectl delete services nginx-service
+
+kubectl delete services nginx-service
+
+kubectl delete deployment nginx-deployment
+
+$AKS_RESOURCE_GROUP="kubernetesgrp"
+$AKS_CLUSTER_NAME="democluster"
+$ACR_RESOURCE_GROUP="demogrp1"
+$ACR_NAME="rgregister"
+
+
+$CLIENT_ID=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "servicePrincipalProfile.clientId" --output tsv)
+
+$ACR_ID=$(az acr show --name $ACR_NAME --resource-group $ACR_RESOURCE_GROUP --query "id" --output tsv)
+
+az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID
+
+kubectl apply -f app.yml
+
+kubectl apply -f service.yml
+
+kubectl get service my-service --watch

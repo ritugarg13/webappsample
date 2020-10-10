@@ -1,0 +1,15 @@
+{
+  "Name": "testRole",
+  "IsCustom": true,
+  "Description": "Read access to a VM and stoarge accounts",
+  "Actions": [
+    "Microsoft.Compute/*/read",
+    "Microsoft.Storage/*/read"
+  ],
+  "NotActions": [],
+  "DataActions": [],
+  "NotDataActions": [],
+  "AssignableScopes": [
+    "/subscriptions/0ff03447-0b3f-45d5-a8c1-7292f7d765a8"
+  ]
+}

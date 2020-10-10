@@ -1,0 +1,45 @@
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+sudo apt update
+sudo apt install docker-ce
+
+sudo docker pull  nginx:1.17.0
+sudo docker images
+
+sudo docker run --name mynginx1 -p 80:80 -d nginx
+
+sudo docker build -t dotnetapp .
+sudo docker run -d -p 5000:5000 dotnetapp
+
+
+sudo docker ps
+
+sudo docker stop <first few char of container id>
+
+
+//Container Registry - do below steps on the linux vm
+// registry name - rgregister
+// docker image name - nodejsapp
+//Install the Azure command line interface
+
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+    gpg --dearmor | \
+    sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+
+AZ_REPO=$(lsb_release -cs)
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
+    sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+sudo apt-get update
+
+sudo apt-get install azure-cli
+
+sudo az login
+
+sudo az acr login --name rgregister
+
+sudo docker tag nodejsapp rgregister.azurecr.io/nodejsapp
+
+sudo docker push rgregister.azurecr.io/nodejsapp
